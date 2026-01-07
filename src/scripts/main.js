@@ -4,19 +4,28 @@ document.addEventListener('click', (e) => {
   if (e.target.matches('.wall')) {
     const spider = document.querySelector('.spider');
     const wall = document.querySelector('.wall');
-    const halfOfSpiderHeight = spider.clientHeight / 2;
-    const halfOfSpiderWidth = spider.clientWidth / 2;
-    const wallHeight = wall.clientHeight - spider.clientHeight;
-    const wallWidth = wall.clientWidth - spider.clientWidth;
-    const targetX = e.offsetX - halfOfSpiderWidth;
-    const targetY = e.offsetY - halfOfSpiderHeight;
+    const wallRect = wall.getBoundingClientRect();
+    const borderOfWall = parseInt(getComputedStyle(wall).borderWidth);
+    const minX = 0;
+    const minY = 0;
+    const maxX = wall.clientWidth - spider.clientWidth;
+    const maxY = wall.clientHeight - spider.clientHeight;
+    const x = Math.min(
+      maxX,
+      Math.max(
+        minX,
+        e.clientX - wallRect.left - spider.clientWidth / 2 - borderOfWall,
+      ),
+    );
+    const y = Math.min(
+      maxY,
+      Math.max(
+        minY,
+        e.clientY - wallRect.top - spider.clientHeight / 2 - borderOfWall,
+      ),
+    );
 
-    const clickY =
-      targetY < 0 ? 0 : targetY > wallHeight ? wallHeight : targetY;
-
-    const clickX = targetX < 0 ? 0 : targetX > wallWidth ? wallWidth : targetX;
-
-    spider.style.left = clickX + 'px';
-    spider.style.top = clickY + 'px';
+    spider.style.left = x + 'px';
+    spider.style.top = y + 'px';
   }
 });
